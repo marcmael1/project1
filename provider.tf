@@ -5,6 +5,7 @@ terraform {
       name = "example-workspace"
     }
   }
+  
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -12,6 +13,7 @@ terraform {
     }
   }
 }
+
 provider "aws" {
   region = "us-east-1"
 }
