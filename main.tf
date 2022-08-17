@@ -1,5 +1,11 @@
-resource "aws_vpc" "demo_vpc" {
-  cidr_block = var.vpc_cidr
+
+locals {
+  public_cidr  = ["10.0.0.0/24", "10.0.1.0/24"]
+  private_cidr = ["10.0.2.0/24", "10.0.3.0/24"]
+}
+
+resource "aws_vpc" "demo-vpc" {
+  cidr_block = "10.0.0.0/16"
 
   tags = {
     "Name" = var.env_code
@@ -7,10 +13,11 @@ resource "aws_vpc" "demo_vpc" {
 }
 
 resource "aws_subnet" "public" {
-  count = length(var.public_cidr)
-  
-  vpc_id     = aws_vpc.demo_vpc.id
-  cidr_block = var.public_cidr[count.index]
+
+  count = length(local.public_cidr)
+
+  vpc_id     = aws_vpc.demo-vpc.id
+  cidr_block = local.public_cidr[count.index]
 
   tags = {
     Name = "${var.env_code}-public-subnet${count.index}"
@@ -18,10 +25,11 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  count = length(var.private_cidr)
- 
-  vpc_id     = aws_vpc.demo_vpc.id
-  cidr_block = var.private_cidr[count.index]
+
+  count = length(local.private_cidr)
+
+  vpc_id     = aws_vpc.demo-vpc.id
+  cidr_block = local.private_cidr[count.index]
 
   tags = {
     Name = "${var.env_code}-private-subnet${count.index}"
@@ -29,7 +37,7 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_internet_gateway" "demo-gw" {
-  vpc_id = aws_vpc.demo_vpc.id
+  vpc_id = aws_vpc.demo-vpc.id
 
   tags = {
     Name = var.env_code
@@ -58,7 +66,7 @@ resource "aws_nat_gateway" "nat-gw" {
 }
 
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.demo_vpc.id
+  vpc_id = aws_vpc.demo-vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -73,7 +81,7 @@ resource "aws_route_table" "public" {
 resource "aws_route_table" "private" {
   count = length(var.private_cidr)
 
-  vpc_id = aws_vpc.demo_vpc.id
+  vpc_id = aws_vpc.demo-vpc.id
 
   route {
     cidr_block     = "0.0.0.0/0"
