@@ -22,6 +22,13 @@ resource "aws_instance" "public" {
   vpc_security_group_ids      = [aws_security_group.public.id]
   subnet_id                   = aws_subnet.public[0].id
 
+  user_data = <<EOF
+  #!/bin/bah
+  yum update -y
+  yum install -y httpd
+  systemctl start httpd && systemctl enable httpd
+  EOF
+
   tags = {
     Name = "${var.env_code}-public"
   }
@@ -36,6 +43,14 @@ resource "aws_security_group" "public" {
     description = "SSH from public"
     from_port   = 22
     to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["${var.my_public_ip}/32"]
+  }
+
+  ingress {
+    description = "HTTP from public"
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["${var.my_public_ip}/32"]
   }
