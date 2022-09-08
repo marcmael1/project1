@@ -5,6 +5,13 @@ terraform {
       version = "~> 3.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "remote-state00"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "remote-stateD"
+  }
 }
 
 provider "aws" {
