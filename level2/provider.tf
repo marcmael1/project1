@@ -5,8 +5,7 @@ terraform {
       version = "~> 3.0"
     }
   }
-
-  backend "s3" {
+    backend "s3" {
     bucket         = "remote-state00"
     key            = "level2.tfstate"
     region         = "us-east-1"
