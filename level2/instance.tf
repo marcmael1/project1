@@ -22,15 +22,6 @@ resource "aws_instance" "public" {
   vpc_security_group_ids      = [aws_security_group.public.id]
   subnet_id                   = data.terraform_remote_state.level1.outputs.public_subnet_id[0]
 
-  user_data = <<EOF
-  #!/bin/bah
-  yum update -y
-  yum install -y httpd git
-  git clone https://github.com/gabrielecirulli/2048.git
-  cp -R 2048/* /var/www/html/
-  systemctl start httpd && systemctl enable httpd
-  EOF
-
   tags = {
     Name = "${var.env_code}-public"
   }
@@ -75,6 +66,15 @@ resource "aws_instance" "private" {
   key_name               = "main"
   vpc_security_group_ids = [aws_security_group.private.id]
   subnet_id              = data.terraform_remote_state.level1.outputs.private_subnet_id[0]
+
+   user_data = <<EOF
+  #!/bin/bah
+  yum update -y
+  yum install -y httpd git
+  git clone https://github.com/gabrielecirulli/2048.git
+  cp -R 2048/* /var/www/html/
+  systemctl start httpd && systemctl enable httpd
+  EOF
 
   tags = {
     Name = "${var.env_code}-private"
