@@ -3,5 +3,5 @@ variable "env_code" {
 }
 
 variable "my_public_ip" {
-  default = "71.246.214.93"
+  default = "96.241.18.31"
 }
