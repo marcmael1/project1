@@ -44,7 +44,7 @@ resource "aws_lb_target_group" "main" {
   health_check {
     enabled             = true
     path                = "/"
-    port                = "traffic-port"
+    port                = "80"
     healthy_threshold   = 5
     unhealthy_threshold = 5
     timeout             = 5
